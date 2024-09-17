@@ -1,5 +1,20 @@
 const mongoose = require("mongoose");
 
+const contextSchema = mongoose.Schema({
+  id: {
+    type: Number,
+    required: [true, "Please enter field id"],
+    default: 0,
+  },
+  type: {
+    type: String,
+    required: [true, "Please enter field type"],
+    default: "",
+  },
+  text: { type: String, default: "" },
+  imagePreviewUrl: { type: String, default: "" },
+});
+
 const blogSchema = mongoose.Schema(
   {
     title: {
@@ -8,13 +23,13 @@ const blogSchema = mongoose.Schema(
       default: "",
     },
     context: {
-      type: String,
-      required: [true, "Please enter context"],
+      type: [contextSchema],
+      required: [true, "Please enter context fields"],
       default: "",
     },
-    image: {
+    thumbnailImage: {
       type: String,
-      required: [true, "Please enter image"],
+      required: [true, "Please enter thumbnail image"],
       default: "",
     },
     postDate: {
