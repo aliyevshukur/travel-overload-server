@@ -12,7 +12,7 @@ const contextSchema = mongoose.Schema({
     default: "",
   },
   text: { type: String, default: "" },
-  imagePreviewUrl: { type: String, default: "" },
+  url: { type: String, default: "" },
 });
 
 const blogSchema = mongoose.Schema(
