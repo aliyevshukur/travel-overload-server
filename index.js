@@ -25,7 +25,7 @@ app.post("/blogs", async (req, res) => {
 // Get blogs from MongoDB database
 app.get("/blogs", async (req, res) => {
   try {
-    const blogs = await Blogs.find();
+    const blogs = await Blogs.find().select("postDate").sort({ postDate: -1 });
     res.status(200).json(blogs);
   } catch (error) {
     console.log("Error: ", error.message);
