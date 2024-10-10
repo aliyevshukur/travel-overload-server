@@ -1,95 +1,32 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const Blogs = require("./models/blog-model");
+const connectDB = require("./db");
 const cors = require("cors");
+const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/user");
+const blogsRoutes = require("./routes/blogs");
 
 const app = express();
+const PORT = process.env.PORT || 5000;
+connectDB();
+
 app.use(express.json({ limit: "16mb" }));
+app.use(express.urlencoded({ extended: false }));
 app.use(cors());
+app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
   res.send("Server is running");
 });
 
-// Post new blogs to MongoDB database
-app.post("/blogs", async (req, res) => {
-  try {
-    const blogs = await Blogs.create(req.body);
-    res.status(200).json(blogs);
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).json({ message: error.message });
-  }
+// Define authentication routes
+app.use("/auth", authRoutes);
+
+// Define user routes
+app.use("/user", userRoutes);
+
+//Define blogs router
+app.use("/blogs", blogsRoutes);
+
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
 });
-
-// Get blogs from MongoDB database
-app.get("/blogs", async (req, res) => {
-  try {
-    const blogs = await Blogs.find().sort({ postDate: -1 });
-    res.status(200).json(blogs);
-  } catch (error) {
-    console.log("Error: ", error.message);
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Get single blog from MongoDB database
-app.get("/blogs/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    const blog = await Blogs.findById(id);
-    res.status(200).json(blog);
-  } catch (error) {
-    console.log("Error: ", error.message);
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Update a blog from MongoDB database
-app.put("/blogs/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const blog = await Blogs.findByIdAndUpdate(id, req.body);
-    if (!blog) {
-      return res
-        .status(404)
-        .json({ message: `Cannot find blog with ID: ${id}` });
-    }
-
-    const updatedBlog = await Blogs.findById(id);
-    res.status(200).json(updatedBlog);
-  } catch (error) {
-    console.log("Error: ", error.message);
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Delete a blog from MongoDB database
-app.delete("/blogs/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const blog = await Blogs.findByIdAndDelete(id);
-    if (!blog) {
-      return res
-        .status(404)
-        .json({ message: `Cannot find blog with ID: ${id}` });
-    }
-
-    res.status(200).json(blog);
-  } catch (error) {
-    console.log("Error: ", error.message);
-    res.status(500).json({ message: error.message });
-  }
-});
-
-mongoose
-  .connect(
-    "mongodb+srv://dejavu:Draven0521@traveloverloadapi.7qqrj.mongodb.net/Travel-API?retryWrites=true&w=majority&appName=TravelOverloadApi",
-  )
-  .then(() => {
-    console.log("Connected to mongodb");
-    app.listen(5000, console.log("Server started on 5000"));
-  })
-  .catch((error) => {
-    console.log(error);
-  });
