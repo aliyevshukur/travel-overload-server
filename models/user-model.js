@@ -17,6 +17,11 @@ const userSchema = mongoose.Schema({
     index: { unique: true },
   },
   password: { type: String, required: [true, "Please enter password"] },
+  profilePicture: {
+    type: String,
+    default:
+      "https://res.cloudinary.com/dzmq4caru/image/upload/v1728741326/sq6upu48ildg54oky2jf.jpg",
+  },
 });
 
 userSchema.pre("save", async function (next) {

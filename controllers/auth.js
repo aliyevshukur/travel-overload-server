@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/user-model.js");
+const { name } = require("ejs");
 
 // Register a new user
 const register = async (req, res, next) => {
@@ -9,13 +10,15 @@ const register = async (req, res, next) => {
   try {
     const isEmailTaken = await User.findOne({ email });
     if (isEmailTaken) {
-      return res.status(409).json({ message: "Email already taken" });
+      return res
+        .status(409)
+        .json({ ok: false, message: "Email already taken" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({ name, surname, email, password: hashedPassword });
     await user.save();
-    res.json({ message: "success" });
+    res.json({ ok: true, message: "success" });
   } catch (error) {
     next(error);
   }
@@ -39,7 +42,17 @@ const login = async (req, res, next) => {
     const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
       expiresIn: "1 hour",
     });
-    res.json({ token, message: "success" });
+    res.json({
+      message: "success",
+      token,
+      user: {
+        userId: user._id,
+        name: user.name,
+        surname: user.surname,
+        email: user.email,
+        profilePicture: user.profilePicture,
+      },
+    });
   } catch (error) {
     next(error);
   }

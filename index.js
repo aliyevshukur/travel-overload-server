@@ -10,9 +10,7 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 
 app.use(express.json({ limit: "16mb" }));
-app.use(express.urlencoded({ extended: false }));
 app.use(cors());
-app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
   res.send("Server is running");
