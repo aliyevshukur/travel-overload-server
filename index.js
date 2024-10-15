@@ -24,7 +24,6 @@ app.use("/user", userRoutes);
 
 //Define blogs router
 app.use("/blogs", blogsRoutes);
-
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });

@@ -47,6 +47,11 @@ const blogSchema = mongoose.Schema(
       required: [true, "Please enter authorImage"],
       default: "",
     },
+    viewCount: {
+      type: Number,
+      required: [true, "Please enter viewCount"],
+      default: 0,
+    },
   },
   {
     timestamp: true,

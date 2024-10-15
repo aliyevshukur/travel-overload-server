@@ -1,3 +1,4 @@
+const { json } = require("express");
 const Blogs = require("../models/blog-model");
 
 // Post new blogs to MongoDB database
@@ -14,8 +15,13 @@ const postBlog = async (req, res) => {
 // Get blogs from MongoDB database
 const getAllBlogs = async (req, res) => {
   try {
-    const blogs = await Blogs.find().sort({ postDate: -1 });
-    res.status(200).json(blogs);
+    const blogs = await Blogs.find();
+    const sortedBlogs = blogs.sort((nextBlog, prevBlog) => {
+      a = nextBlog.postDate.split("-").reverse().join("");
+      b = prevBlog.postDate.split("-").reverse().join("");
+      return a > b ? -1 : a < b ? 1 : 0;
+    });
+    res.status(200).json(sortedBlogs);
   } catch (error) {
     console.log("Error: ", error.message);
     res.status(500).json({ message: error.message });
@@ -78,4 +84,10 @@ const deleteBlog = async (req, res) => {
   }
 };
 
-module.exports = { postBlog, getAllBlogs, getBlog, updateBlog, deleteBlog };
+module.exports = {
+  postBlog,
+  getAllBlogs,
+  getBlog,
+  updateBlog,
+  deleteBlog,
+};

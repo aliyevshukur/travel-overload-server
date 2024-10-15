@@ -1,8 +1,7 @@
 const User = require("../models/user-model");
-export const uploadProfilePicture = async (req, res) => {
+const uploadProfilePicture = async (req, res) => {
   try {
-    const { id } = req.params;
-    const user = await User.findById(id);
+    const user = await User.findById(req.user._id);
     const profilePictureUrl = req.body;
 
     if (!profilePictureUrl) {
@@ -32,3 +31,5 @@ export const uploadProfilePicture = async (req, res) => {
     res.status(500).json({ ok: false, message: "Internal server error" });
   }
 };
+
+module.exports = { uploadProfilePicture };
