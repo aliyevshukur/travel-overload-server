@@ -9,8 +9,12 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 connectDB();
 
-app.use(express.json({ limit: "16mb" }));
-app.use(cors());
+app.use(express.json());
+const corsOptions = {
+  origin: `${process.env.CLIENT_URL}`,
+};
+app.use(cors(corsOptions));
+app.use(setCorsHeaders);
 
 app.get("/", (req, res) => {
   res.send("Server is running");
@@ -24,6 +28,17 @@ app.use("/user", userRoutes);
 
 //Define blogs router
 app.use("/blogs", blogsRoutes);
+
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
+
+function setCorsHeaders(req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  // res.setHeader(
+  //   "Access-Control-Allow-Methods",
+  //   "GET, POST, PUT, PATCH, DELETE",
+  // );
+  // res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+}

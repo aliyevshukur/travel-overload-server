@@ -26,6 +26,7 @@ const register = async (req, res, next) => {
 
 // Login with an existing user
 const login = async (req, res, next) => {
+  console.log(`Request: ${req.body}`);
   const { email, password } = req.body;
 
   try {
