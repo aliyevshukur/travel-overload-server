@@ -1,10 +1,16 @@
 const { json } = require("express");
 const Blogs = require("../models/blog-model");
+const User = require("../models/user-model");
 
 // Post new blogs to MongoDB database
 const postBlog = async (req, res) => {
   try {
+    if (!req.body) {
+      return res.status(400).send({ error: "Request body is empty" });
+    }
+
     const blogs = await Blogs.create(req.body);
+    console.log("Blog created: ", JSON.stringify(req.body));
     res.status(200).json(blogs);
   } catch (error) {
     console.log(error.message);
@@ -15,13 +21,13 @@ const postBlog = async (req, res) => {
 // Get blogs from MongoDB database
 const getAllBlogs = async (req, res) => {
   try {
-    const blogs = await Blogs.find();
-    const sortedBlogs = blogs.sort((nextBlog, prevBlog) => {
-      a = nextBlog.postDate.split("-").reverse().join("");
-      b = prevBlog.postDate.split("-").reverse().join("");
-      return a > b ? -1 : a < b ? 1 : 0;
-    });
-    res.status(200).json(sortedBlogs);
+    const blogs = await Blogs.find().populate("author");
+    // const sortedBlogs = blogs.sort((nextBlog, prevBlog) => {
+    //   a = nextBlog.postDate;
+    //   b = prevBlog.postDate;
+    //   return a > b ? 1 : a < b ? -1 : 0;
+    // });
+    res.status(200).json(blogs);
   } catch (error) {
     console.log("Error: ", error.message);
     res.status(500).json({ message: error.message });
@@ -32,7 +38,8 @@ const getAllBlogs = async (req, res) => {
 const getBlog = async (req, res) => {
   try {
     const id = req.params.id;
-    const blog = await Blogs.findById(id);
+    const blog = await Blogs.findById(id).populate("author");
+    console.log(`Author, ${JSON.stringify(blog.author)}`);
 
     if (!blog) {
       return res

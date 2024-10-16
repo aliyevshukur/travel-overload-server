@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const User = require("./user-model");
 
 const contextSchema = mongoose.Schema({
   id: {
@@ -38,14 +39,9 @@ const blogSchema = mongoose.Schema(
       default: "",
     },
     author: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: [true, "Please enter author"],
-      default: "",
-    },
-    authorImage: {
-      type: String,
-      required: [true, "Please enter authorImage"],
-      default: "",
+      ref: "User",
     },
     viewCount: {
       type: Number,

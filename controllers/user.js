@@ -1,4 +1,20 @@
 const User = require("../models/user-model");
+
+const getUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ ok: false, message: "User not found" });
+    }
+
+    res.status(200).json({ ok: true, user: user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ ok: false, message: "Internal server error" });
+  }
+};
+
 const uploadProfilePicture = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -10,30 +26,29 @@ const uploadProfilePicture = async (req, res) => {
         .json({ ok: false, message: "No picture URL provided" });
     }
 
-    // // Validate the picture URL
-    // const validUrl =
-    //   /^(http(s)?:\/\/)?([w]{3}\.)?([a-zA-Z0-9\-\.]+)\.(com|org|net|edu|gov|mil|biz|info|name|pro|aero|coop|jobs|mobi|museum|travel|[a-zA-Z]{2,3})$/;
-    // if (!validUrl.test(profilePictureUrl)) {
-    //   return res
-    //     .status(400)
-    //     .json({ ok: false, message: "Invalid picture URL" });
-    // }
-
-    // Update the user's profile picture URL
     user.profilePicture = profilePictureUrl;
     await user.save();
 
-    res
-      .status(200)
-      .json({
-        ok: true,
-        message: "Profile picture URL updated successfully",
-        url: profilePictureUrl,
-      });
+    res.status(200).json({
+      ok: true,
+      message: "Profile picture URL updated successfully",
+      url: profilePictureUrl,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ ok: false, message: "Internal server error" });
   }
 };
 
-module.exports = { uploadProfilePicture };
+const getUserBlogs = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    const blogs = await Blog.find({ author: user._id });
+    res.status(200).json(blogs);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ ok: false, message: "Internal server error" });
+  }
+};
+
+module.exports = { uploadProfilePicture, getUserBlogs, getUser };
