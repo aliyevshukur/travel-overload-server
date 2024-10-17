@@ -13,7 +13,7 @@ app.use(express.json());
 const corsOptions = {
   origin: `${process.env.CLIENT_URL}`,
 };
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(setCorsHeaders);
 
 app.get("/", (req, res) => {
