@@ -22,11 +22,11 @@ const postBlog = async (req, res) => {
 const getAllBlogs = async (req, res) => {
   try {
     const blogs = await Blogs.find().populate("author");
-    // const sortedBlogs = blogs.sort((nextBlog, prevBlog) => {
-    //   a = nextBlog.postDate;
-    //   b = prevBlog.postDate;
-    //   return a > b ? 1 : a < b ? -1 : 0;
-    // });
+    const sortedBlogs = blogs.sort((nextBlog, prevBlog) => {
+      a = nextBlog.postDate;
+      b = prevBlog.postDate;
+      return a > b ? -1 : a < b ? 1 : 0;
+    });
     res.status(200).json(blogs);
   } catch (error) {
     console.log("Error: ", error.message);

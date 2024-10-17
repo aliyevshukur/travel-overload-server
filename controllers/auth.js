@@ -26,7 +26,7 @@ const register = async (req, res, next) => {
 
 // Login with an existing user
 const login = async (req, res, next) => {
-  console.log(`Request: ${req.body}`);
+  console.log(`Login credentials: ${JSON.stringify(req.body)}`);
   const { email, password } = req.body;
 
   try {
@@ -36,6 +36,7 @@ const login = async (req, res, next) => {
     }
 
     const passwordMatch = await user.comparePassword(password);
+    console.log(`Is password matching in login ${passwordMatch}`);
     if (!passwordMatch) {
       return res.status(401).json({ message: "Incorrect password" });
     }
@@ -43,6 +44,7 @@ const login = async (req, res, next) => {
     const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
       expiresIn: "365d",
     });
+
     res.json({
       message: "success",
       token,
