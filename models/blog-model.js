@@ -43,9 +43,9 @@ const blogSchema = mongoose.Schema(
       required: [true, "Please enter author"],
       ref: "User",
     },
-    viewCount: {
+    views: {
       type: Number,
-      required: [true, "Please enter viewCount"],
+      required: [true, "Please enter views"],
       default: 0,
     },
   },

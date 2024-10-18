@@ -1,4 +1,5 @@
 const User = require("../models/user-model");
+const Blogs = require("../models/blog-model");
 const bcrypt = require("bcrypt");
 
 const getUser = async (req, res) => {
@@ -42,10 +43,10 @@ const uploadProfilePicture = async (req, res) => {
 };
 
 const getUserBlogs = async (req, res) => {
+  console.log("FETCHED USER BLOGS");
   try {
-    const user = await User.findById(req.user._id);
-    const blogs = await Blog.find({ author: user._id });
-    res.status(200).json(blogs);
+    const blogs = await Blogs.find({ author: req.user._id }).populate("author");
+    res.status(200).json({ ok: true, blogs });
   } catch (error) {
     console.error(error);
     res.status(500).json({ ok: false, message: "Internal server error" });

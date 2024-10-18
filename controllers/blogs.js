@@ -18,8 +18,8 @@ const postBlog = async (req, res) => {
   }
 };
 
-// Get blogs from MongoDB database
-const getAllBlogs = async (req, res) => {
+// Get blogss sorted by date from MongoDB database
+const getNewestBlogs = async (req, res) => {
   try {
     const blogs = await Blogs.find().populate("author");
     const sortedBlogs = blogs.sort((nextBlog, prevBlog) => {
@@ -27,7 +27,23 @@ const getAllBlogs = async (req, res) => {
       b = prevBlog.postDate;
       return a > b ? -1 : a < b ? 1 : 0;
     });
-    res.status(200).json(blogs);
+    res.status(200).json(sortedBlogs);
+  } catch (error) {
+    console.log("Error: ", error.message);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Get blogs sorted by views from MongoDB database
+const getPopularBlogs = async (req, res) => {
+  try {
+    const blogs = await Blogs.find().populate("author");
+    const sortedBlogs = blogs.sort((nextBlog, prevBlog) => {
+      a = nextBlog.views;
+      b = prevBlog.views;
+      return a > b ? -1 : a < b ? 1 : 0;
+    });
+    res.status(200).json(sortedBlogs);
   } catch (error) {
     console.log("Error: ", error.message);
     res.status(500).json({ message: error.message });
@@ -91,10 +107,30 @@ const deleteBlog = async (req, res) => {
   }
 };
 
+const increaseView = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const blog = await Blogs.findById(id);
+    if (!blog) {
+      return res
+        .status(404)
+        .json({ message: `Cannot find blog with ID: ${id}` });
+    }
+    blog.views += 1;
+    await blog.save();
+    res.status(200).json({ views: blog.views });
+  } catch (error) {
+    console.log("Error: ", error.message);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   postBlog,
-  getAllBlogs,
+  getNewestBlogs,
+  getPopularBlogs,
   getBlog,
   updateBlog,
   deleteBlog,
+  increaseView,
 };
