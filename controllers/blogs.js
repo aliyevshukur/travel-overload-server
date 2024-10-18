@@ -14,6 +14,7 @@ const postBlog = async (req, res) => {
     res.status(200).json(blogs);
   } catch (error) {
     console.log(error.message);
+    console.log("Error while creating blog: ", error.message);
     res.status(500).json({ message: error.message });
   }
 };
@@ -29,7 +30,7 @@ const getNewestBlogs = async (req, res) => {
     });
     res.status(200).json(sortedBlogs);
   } catch (error) {
-    console.log("Error: ", error.message);
+    console.log("Error fetchin newest blogs: ", error.message);
     res.status(500).json({ message: error.message });
   }
 };
