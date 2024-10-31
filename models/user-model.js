@@ -19,8 +19,15 @@ const userSchema = mongoose.Schema({
   password: { type: String, required: [true, "Please enter password"] },
   profilePicture: {
     type: String,
+    required: [true, "Please enter profile picture"],
     default:
       "https://res.cloudinary.com/dzmq4caru/image/upload/v1728741326/sq6upu48ildg54oky2jf.jpg",
+  },
+  role: {
+    type: String,
+    required: [true, "Please enter user role"],
+    default: "user",
+    enum: ["user", "admin"],
   },
 });
 

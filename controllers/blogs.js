@@ -46,7 +46,7 @@ const getPopularBlogs = async (req, res) => {
     });
     res.status(200).json(sortedBlogs);
   } catch (error) {
-    console.log("Error: ", error.message);
+    console.log("Error fetching popular blogs: ", error.message);
     res.status(500).json({ message: error.message });
   }
 };
@@ -98,13 +98,13 @@ const deleteBlog = async (req, res) => {
     if (!blog) {
       return res
         .status(404)
-        .json({ message: `Cannot find blog with ID: ${id}` });
+        .json({ ok: false, message: `Cannot find blog with ID: ${id}` });
     }
 
-    res.status(200).json(blog);
+    res.status(200).json({ ok: true, message: "Blog deleted successfully" });
   } catch (error) {
     console.log("Error: ", error.message);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ ok: false, message: error.message });
   }
 };
 
